@@ -14,87 +14,31 @@ You may assume the two numbers do not contain any leading zero, except the numbe
  *     ListNode(int x, ListNode *next) : val(x), next(next) {}
  * };
  */
-#include <vector>
-#include <iostream>
-#include <cmath>
-
-using namespace std; 
-
 class Solution {
 public:
     ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
-        vector<int> num1 = vectorFromListNode(l1);
-        vector<int> num2 = vectorFromListNode(l2);
-        int sum1 = sumVector(num1);
-        int sum2 = sumVector(num2);
-        int sum = sum1 + sum2;
-        vector<int> nums = intToVector(sum);
-        cout << nums[0];
-        
-        ListNode* x = nullptr;
-        ListNode* last;
-    
-        for(int i; i < nums.size(); i++){
-            ListNode* tmp = new ListNode(nums[i]);
-            
+        ListNode* dummyHead = new ListNode(0);
+        ListNode* tail = dummyHead;
+        int carry = 0;
 
-            if(x == nullptr){
-                x = tmp;  
-                last = tmp;
-            }
-            else
-                last -> next = tmp;
-                last = tmp;
+        while (l1 != nullptr || l2 != nullptr || carry != 0) {
+            int digit1 = (l1 != nullptr) ? l1->val : 0;
+            int digit2 = (l2 != nullptr) ? l2->val : 0;
+
+            int sum = digit1 + digit2 + carry;
+            int digit = sum % 10;
+            carry = sum / 10;
+
+            ListNode* newNode = new ListNode(digit);
+            tail->next = newNode;
+            tail = tail->next;
+
+            l1 = (l1 != nullptr) ? l1->next : nullptr;
+            l2 = (l2 != nullptr) ? l2->next : nullptr;
         }
-        return x;
+
+        ListNode* result = dummyHead->next;
+        delete dummyHead;
+        return result;
     }
-
-    vector<int> vectorFromListNode(ListNode* l1){
-        vector<int> num1 {};
-        bool flag = true;
-        while(flag == true){
-            int a = l1->val;
-            if (l1->next == nullptr){
-                num1.insert(num1.end(), a);
-                flag = false;
-            }
-            else{
-                num1.insert(num1.end(), a);
-                l1 = l1->next;
-            }
-        }
-        return num1;
-    }
-
-    int sumVector(vector<int> num1) {
-        int sum1 = 0;
-        for(int i = 0; i < num1.size(); i++){
-            sum1 += num1[i]*pow(10, i);           
-        }
-        return sum1;
-    }
-
-    vector<int> intToVector(int sum){
-        vector<int> nums;
-
-        if (sum == 0){
-            nums.insert(nums.end(), sum);
-            return nums;    
-        }
-
-        else{
-            int size = trunc(log10(sum)) + 1;
-            for(int i = 0; i < size; i++){
-                int x = sum%10;
-                sum = sum/10;
-                nums.insert(nums.end(), x);
-            }
-
-            return nums;    
-        }
-
-        
-    }
-
-
 };
